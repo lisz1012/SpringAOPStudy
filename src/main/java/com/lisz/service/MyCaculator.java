@@ -1,31 +1,33 @@
 package com.lisz.service;
 
+import com.lisz.utils.LogUtil;
+
 public class MyCaculator implements Calculator {
 	public int add(int i, int j) {
-		System.out.println("add is about to execute, param1 is " + i + " param 2 is " + j);
+		LogUtil.start(i, j);
 		int res = i + j;
-		System.out.println("add completed, result is: " + res);
+		LogUtil.end(res);
 		return res;
 	}
 
 	public int sub(int i, int j) {
-		System.out.println("sub is about to execute, param1 is " + i + " param 2 is " + j);
+		LogUtil.start(i, j);
 		int res = i - j;
-		System.out.println("sub completed, result is: " + res);
+		LogUtil.end(res);
 		return res;
 	}
 
 	public int mul(int i, int j) {
-		System.out.println("mul is about to execute, param1 is " + i + " param 2 is " + j);
+		LogUtil.start(i, j);
 		int res = i * j;
-		System.out.println("mul completed, result is: " + res);
+		LogUtil.end(res);
 		return res;
 	}
 
 	public int div(int i, int j) {
-		System.out.println("div is about to execute, param1 is " + i + " param 2 is " + j);
+		LogUtil.start(i, j);
 		int res = i / j;
-		System.out.println("div completed, result is: " + res);
+		LogUtil.end(res);
 		return res;
 	}
 }
