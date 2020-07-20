@@ -18,7 +18,7 @@ import java.lang.reflect.Proxy;
  * Spring甚至可以帮我们把以下的逻辑都省略，不用写前后打印日志的逻辑代码
  */
 public class CalculatorProxy {
-	public static Object getProxy(final Object object) {
+	public static Object getProxy(final Object object) { // object是被代理对象
 		Class<?> infces[] = object.getClass().getInterfaces();
 		return Proxy.newProxyInstance(Calculator.class.getClassLoader(), infces, new InvocationHandler() {
 			@Override
