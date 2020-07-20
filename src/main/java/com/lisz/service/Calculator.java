@@ -1,5 +1,8 @@
 package com.lisz.service;
 
+import org.springframework.stereotype.Service;
+
+@Service
 public interface Calculator {
 	int add(int i, int j) throws NoSuchMethodException;
 	int sub(int i, int j) throws NoSuchMethodException;

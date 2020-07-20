@@ -4,6 +4,7 @@ import com.lisz.service.MyCalculator;
 import com.lisz.service.myinterface.MyInterface;
 import com.lisz.service.myinterface.MySubclass;
 import org.junit.jupiter.api.Test;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 
 public class MyTest {
@@ -20,5 +21,13 @@ public class MyTest {
 
 		MyInterface myInterface = (MyInterface) CalculatorProxy.getProxy(new MySubclass());
 		myInterface.show();
+	}
+
+	@Test
+	public void test02() throws Exception {
+		ClassPathXmlApplicationContext context = new ClassPathXmlApplicationContext("application-context.xml");
+		Calculator calculator = context.getBean("myCalculator", Calculator.class);
+		int res = calculator.add(100, 20);
+		System.out.println(res);
 	}
 }
