@@ -15,17 +15,18 @@ import java.lang.reflect.Proxy;
  * 必须要有接口，否则不能使用这种JDK的动态代理，但是在生产环境中不能保证每个类都实现了某个/些接口
  * 所以有第二种方式是cglib，有没有接口都无所谓
  * Spring中有两种动态代理的方式1. JDK 2. cglib
+ * Spring甚至可以帮我们把以下的逻辑都省略，不用写前后打印日志的逻辑代码
  */
 public class CalculatorProxy {
-	public static Calculator getProxy(final Calculator calculator) {
-		Class<?> infces[] = calculator.getClass().getInterfaces();
-		return (Calculator) Proxy.newProxyInstance(Calculator.class.getClassLoader(), infces, new InvocationHandler() {
+	public static Object getProxy(final Object object) {
+		Class<?> infces[] = object.getClass().getInterfaces();
+		return Proxy.newProxyInstance(Calculator.class.getClassLoader(), infces, new InvocationHandler() {
 			@Override
 			public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
 				Object retValue = null;
 				try {
 					LogUtil.start(method, args);
-					retValue = method.invoke(calculator, args);
+					retValue = method.invoke(object, args);
 					LogUtil.end(method, retValue);
 				} catch (Exception e) {
 					LogUtil.logException(method, e);

@@ -5,11 +5,11 @@ import java.util.Arrays;
 
 public class LogUtil {
 	public static void start(Method method, Object ... objects) {
-		System.out.println(method.getName() + " is about to execute, params are: " + Arrays.asList(objects));
+		System.out.println(method.getName() + " is about to execute, params are: " + (objects == null ? "[]" : Arrays.asList(objects)));
 	}
 
 	public static void end(Method method, Object ... objects) {
-		System.out.println(method.getName() + " completed, result is: " + Arrays.asList(objects));
+		System.out.println(method.getName() + " completed, result is: " + (objects == null ? "[]" : Arrays.asList(objects)));
 	}
 
 	public static void logException(Method method, Exception e) {
