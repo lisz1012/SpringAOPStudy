@@ -25,14 +25,14 @@ public class CalculatorProxy {
 			public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
 				Object retValue = null;
 				try {
-					LogUtil.start(method, args);
+//用spring的时候注掉	LogUtil.start(method, args);
 					retValue = method.invoke(object, args);
-					LogUtil.end(method, retValue);
+//					LogUtil.end(method, retValue);
 				} catch (Exception e) {
-					LogUtil.logException(method, e);
+//					LogUtil.logException(method, e);
 					e.printStackTrace();
 				} finally {
-					LogUtil.logFinally(method);
+//					LogUtil.logFinally(method);
 				}
 				return retValue;
 			}
