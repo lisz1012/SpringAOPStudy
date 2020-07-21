@@ -6,11 +6,18 @@ import org.springframework.stereotype.Component;
 import java.lang.reflect.Method;
 import java.util.Arrays;
 
+/**
+ * 切入点表达式最精确的匹配方式："execution(public int com.lisz.service.MyCalculator.add(int, int))"
+ * 一般使用的时候用的是通配符的方式：
+ *      * 任意多的任意字符, public int com.lisz.service.MyCalculator.*(int, int)) 匹配任何符合条件的切入点（带切入点注解的）
+ *      .
+ */
+
 @Aspect
 @Component
 public class LogUtil {
 
-	@Before("execution(public int com.lisz.service.MyCalculator.add(int, int))")
+	@Before("execution(public int com.lisz.service.MyCalculator.*(int, int))")
 	public static void start() { // 参数列表不要随便填写参数，会有报错
 		System.out.println("is about to execute, params are: ");
 	}

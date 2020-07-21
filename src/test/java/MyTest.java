@@ -29,5 +29,7 @@ public class MyTest {
 		Calculator calculator = context.getBean("myCalculator", Calculator.class);
 		int res = calculator.add(100, 20);
 		System.out.println(res);
+		System.out.println(calculator.sub(2, 3));
+		System.out.println(calculator.getClass());
 	}
 }

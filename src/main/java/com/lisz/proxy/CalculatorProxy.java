@@ -16,6 +16,7 @@ import java.lang.reflect.Proxy;
  * 所以有第二种方式是cglib，有没有接口都无所谓
  * Spring中有两种动态代理的方式1. JDK 2. cglib
  * Spring甚至可以帮我们把以下的逻辑都省略，不用写前后打印日志的逻辑代码
+ * Spring先看有没有实现接口，有则用JDK生成代理，否则用CGLIB
  */
 public class CalculatorProxy {
 	public static Object getProxy(final Object object) { // object是被代理对象
