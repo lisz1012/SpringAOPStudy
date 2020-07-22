@@ -10,7 +10,7 @@ import java.util.Arrays;
  * 切入点表达式最精确的匹配方式："execution(public int com.lisz.service.MyCalculator.add(int, int))"
  * 一般使用的时候用的是通配符的方式：
  *      * 任意多的任意字符, public int com.lisz.service.MyCalculator.*(int, int)) 匹配任何符合条件的切入点（带切入点注解的）
- *      .
+ *      . 任意一个字符
  */
 
 @Aspect
