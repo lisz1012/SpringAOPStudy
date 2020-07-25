@@ -1,9 +1,6 @@
 package com.lisz.service;
 
-import com.lisz.utils.LogUtil;
 import org.springframework.stereotype.Service;
-
-import java.lang.reflect.Method;
 
 @Service
 public class MyCalculator implements Calculator {
