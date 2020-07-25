@@ -31,16 +31,24 @@ import java.util.Arrays;
  * 获得被代理方法的参数、方法名等信息的时候，必须使用JoinPoint对象为第一个参数传入代理方法。从中可以get到signature和args等
  *
  * @AfterReturning 注解内添加returning参数可以获取其返回值，并在advisor这里加一个参数，接着那个返回值，
- *                 这个返回值的变量名必须跟注解参数中的returning = 的相一致，类型必须是返回值的父类（接口）
+ *                 这个返回值的变量名必须跟注解参数中的returning = 的相一致，类型必须是返回值的类型或其父类（接口）
  * @AfterThrowing 注解内添加 throwing 参数可以获取其异常，并在advisor这里加一个参数，接着那个异常，
  *                 这个异常的变量名必须跟注解参数中的throwing = 的相一致，异常的类型要跟抛出的对上才能执行
+ *
+ * 通知方法在定义的时候对于访问修饰符和返回值类型都没有明确的要求，但是要注意参数不能随便添加
+ * 如果有多个匹配的execution表达式相同，能否抽出来？可以:
+ *      1. 写一个空方法 2. 在其上写@Pointcut 3. 把织入点表达式作为唯一的字符串参数写进去 4. 在用到这个织入点表达式的注解（如@Before）
+ *      后面的参数中写方法的调用，如：@Before(value = "myPointcut()")
  */
 
 @Aspect
 @Component
 public class LogUtil {
 
-	@Before("execution(public int com.lisz.service.MyCalculator.*(int, *))")
+	@Pointcut("execution(public int com.lisz.service.MyCalculator.*(int, *))")
+	public void myPointcut(){}
+
+	@Before(value = "myPointcut()")
 	public static void start() { // 参数列表不要随便填写参数，会有报错
 		System.out.println("is about to execute, params are: ");
 	}
@@ -75,8 +83,9 @@ public class LogUtil {
 		System.out.println("start7: is about to execute, params are: ");
 	}
 
-	@Before("execution(public int com.lisz.service.MyCalculator.*(int, *))")
-	public static void start8(JoinPoint joinPoint) { // 添加JoinPoint类型的参数，获得被代理对象的被代理方法的参数列表
+	// 通知方法在定义的时候对于访问修饰符和返回值类型都没有明确的要求
+	@Before("myPointcut()")
+	private int start8(JoinPoint joinPoint) { // 添加JoinPoint类型的参数，获得被代理对象的被代理方法的参数列表
 		Object agrs[] = joinPoint.getArgs();
 		System.out.println("start8 is about to execute, params are: ");
 		Arrays.asList(agrs).forEach(System.out::println);
@@ -89,6 +98,7 @@ public class LogUtil {
 
 		System.out.println(joinPoint.getTarget()); // 打印被代理对象
 		System.out.println(joinPoint.getThis()); // 打印被代理对象
+		return 100;
 	}
 
 	// 正常返回值之后执行. @AfterReturning注解内添加returning参数可以获取其返回值
