@@ -45,8 +45,8 @@ import java.util.Arrays;
  * 如果是正常结束，则顺序是：@Around前置通知 -> @Before -> 原方法调用 -> @AfterReturning -> @After -> @Around后置通知 -> @Around finally通知 -> @Around环绕返回前通知
  * 如果是异常结束，则顺序是：@Around前置通知 -> @Before -> 原方法调用 -> @AfterReturning -> @After -> @Around异常通知 -> @Around finally通知 -> @Around环绕返回前通知
  * 环绕通知写起来就跟用JDK的动态代理是差不多的了，如果需要修改返回值，则必须用@Around, 这种方式操作起来会控制得更细致
- * 用@Order(x)注解来标识不同的Aspect之间的相对顺序，x数字越大@Before越先执行、@After越后执行；数字越小则反之： 大内小外。两个@Order 参数里面的x相等，
- * 则按照字母顺序来
+ * 用@Order(x)注解来标识不同的Aspect之间的相对顺序，x数字越大@Before越先执行、@After越后执行；数字越小则反之： 大内小外，底层就是一个类似于filter的责任链，类似递归，数字小的去
+ * 调用数字大的。两个@Order 参数里面的x相等，则按照字母顺序来
  */
 
 @Aspect
