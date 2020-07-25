@@ -9,6 +9,7 @@ import java.lang.reflect.Method;
 public class MyCalculator implements Calculator {
 	public int add(int i, int j) throws NoSuchMethodException {
 		int res = i + j;
+		System.out.println(i + " + " + j + " = " + res);
 		return res;
 	}
 

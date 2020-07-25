@@ -1,5 +1,7 @@
 package com.lisz.utils;
 
+import org.aspectj.lang.JoinPoint;
+import org.aspectj.lang.Signature;
 import org.aspectj.lang.annotation.*;
 import org.springframework.stereotype.Component;
 
@@ -25,6 +27,13 @@ import java.util.Arrays;
  * advice的异常执行顺序: @Before -> @After -> @AfterThrowing
  * https://juejin.im/post/5e9fb976f265da47ef2f4137
  * 但是这里的测试顺序是：@Before -> @AfterReturning -> @After 这是个问题。
+ *
+ * 获得被代理方法的参数、方法名等信息的时候，必须使用JoinPoint对象为第一个参数传入代理方法。从中可以get到signature和args等
+ *
+ * @AfterReturning 注解内添加returning参数可以获取其返回值，并在advisor这里加一个参数，接着那个返回值，
+ *                 这个返回值的变量名必须跟注解参数中的returning = 的相一致，类型必须是返回值的父类（接口）
+ * @AfterThrowing 注解内添加 throwing 参数可以获取其异常，并在advisor这里加一个参数，接着那个异常，
+ *                 这个异常的变量名必须跟注解参数中的throwing = 的相一致，异常的类型要跟抛出的对上才能执行
  */
 
 @Aspect
@@ -66,14 +75,34 @@ public class LogUtil {
 		System.out.println("start7: is about to execute, params are: ");
 	}
 
-	@AfterReturning("execution(public int com.lisz.service.MyCalculator.add(int, int))") // 正常返回值之后执行
-	public static void end() {
-		System.out.println("completed, result is: ");
+	@Before("execution(public int com.lisz.service.MyCalculator.*(int, *))")
+	public static void start8(JoinPoint joinPoint) { // 添加JoinPoint类型的参数，获得被代理对象的被代理方法的参数列表
+		Object agrs[] = joinPoint.getArgs();
+		System.out.println("start8 is about to execute, params are: ");
+		Arrays.asList(agrs).forEach(System.out::println);
+		Signature signature = joinPoint.getSignature();
+		System.out.println("Signature: " + signature);
+		System.out.println("Method name: " + signature.getName());
+		System.out.println("Modifiers: " + signature.getModifiers());
+		System.out.println("Declared type name: " + signature.getDeclaringTypeName());
+		System.out.println("Kind: " + joinPoint.getKind());
+
+		System.out.println(joinPoint.getTarget()); // 打印被代理对象
+		System.out.println(joinPoint.getThis()); // 打印被代理对象
 	}
 
-	@AfterThrowing("execution(public int com.lisz.service.MyCalculator.add(int, int))")
-	public static void logException() {
-		System.out.println("方法抛出异常");
+	// 正常返回值之后执行. @AfterReturning注解内添加returning参数可以获取其返回值
+	@AfterReturning(pointcut = "execution(public int com.lisz.service.MyCalculator.add(int, int))", returning = "retVal")
+	public static void end(JoinPoint joinPoint, int retVal) { // 这个变量名必须跟上面的returning = "retVal"一致，类型必须是返回值的父类（接口）
+		Signature signature = joinPoint.getSignature();
+		System.out.println(signature.getName() + " completed, result is: " + retVal);
+	}
+
+	// 程序出现异常之后执行. @AfterThrowing注解内添加 throwing 参数可以获取其异常
+	@AfterThrowing(pointcut = "execution(public int com.lisz.service.MyCalculator.div(int, int))", throwing = "e")
+	public static void logException(JoinPoint joinPoint, ArithmeticException e) { //这里可以指定要对哪种异常进行处理，类型对不上则不会执行
+		Signature signature = joinPoint.getSignature();
+		System.out.println(signature.getName() + " 方法抛出异常 " + e.getMessage());
 	}
 
 	@After("execution(public int com.lisz.service.MyCalculator.add(int, int))") // 无论如何方法执行完了都会执行，相当于finally

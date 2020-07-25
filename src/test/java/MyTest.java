@@ -45,4 +45,10 @@ public class MyTest {
 		Calculator myCalculator = context.getBean("myCalculator", Calculator.class);
 		myCalculator.show(1);
 	}
+
+	@Test
+	public void test05() throws Exception {
+		Calculator myCalculator = context.getBean("myCalculator", Calculator.class);
+		myCalculator.div(1, 0);
+	}
 }
