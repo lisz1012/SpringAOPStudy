@@ -1,24 +1,28 @@
-package com.lisz.service;
+package com.lisz.service.impl;
 
-public class SecondCalculator implements Calculator {
-	@Override
+import com.lisz.service.Calculator;
+import org.springframework.stereotype.Service;
+
+@Service
+public class MyCalculator2 implements Calculator {
 	public int add(int i, int j) throws NoSuchMethodException {
-		return 0;
+		int res = i + j;
+		return res;
 	}
 
-	@Override
 	public int sub(int i, int j) throws NoSuchMethodException {
-		return 0;
+		int res = i - j;
+		return res;
 	}
 
-	@Override
 	public int mul(int i, int j) throws NoSuchMethodException {
-		return 0;
+		int res = i * j;
+		return res;
 	}
 
-	@Override
 	public int div(int i, int j) throws NoSuchMethodException {
-		return 0;
+		int res = i / j;
+		return res;
 	}
 
 	@Override

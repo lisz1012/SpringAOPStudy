@@ -5,5 +5,5 @@ public interface Calculator {
 	int sub(int i, int j) throws NoSuchMethodException;
 	int mul(int i, int j) throws NoSuchMethodException;
 	int div(int i, int j) throws NoSuchMethodException;
-
+	int show(int i);
 }

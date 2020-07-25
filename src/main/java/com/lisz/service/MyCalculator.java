@@ -26,4 +26,9 @@ public class MyCalculator implements Calculator {
 		int res = i / j;
 		return res;
 	}
+
+	public int show(int i) {
+		System.out.println(i);
+		return i;
+	}
 }
