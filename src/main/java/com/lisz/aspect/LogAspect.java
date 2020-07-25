@@ -39,7 +39,7 @@ import java.util.Arrays;
  * 通知方法在定义的时候对于访问修饰符和返回值类型都没有明确的要求，但是要注意参数不能随便添加
  * 如果有多个匹配的execution表达式相同，能否抽出来？可以:
  *      1. 写一个无返回值的空方法 2. 在其上写@Pointcut 3. 把织入点表达式作为唯一的字符串参数写进去 4. 在用到这个织入点表达式的注解（如@Before）
- *      后面的参数中写方法的调用，如：@Before(value = "myPointcut()")。此处的空方法之气到一个声明的作用，@Pointcut总得有个地方放吧
+ *      后面的参数中写方法的调用，如：@Before(value = "myPointcut()")。此处的空方法只是起到一个声明的作用，@Pointcut总得有个地方放吧
  *
  * 环绕通知在执行的时候是优先于普通通知的。
  * 如果是正常结束，则顺序是：@Around前置通知 -> @Before -> 原方法调用 -> @AfterReturning -> @After -> @Around后置通知 -> @Around finally通知 -> @Around环绕返回前通知
