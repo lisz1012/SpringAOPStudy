@@ -45,7 +45,7 @@ import java.util.Arrays;
  * 环绕通知在执行的时候是优先于普通通知的。
  * 如果是正常结束，则顺序是：@Around前置通知 -> @Before -> 原方法调用 -> @AfterReturning -> @After -> @Around后置通知 -> @Around finally通知 -> @Around环绕返回前通知
  * 如果是异常结束，则顺序是：@Around前置通知 -> @Before -> 原方法调用 -> @AfterReturning -> @After -> @Around异常通知 -> @Around finally通知 -> @Around环绕返回前通知
- * 以上并不对
+ * 环绕通知写起来就跟用JDK的动态代理是差不多的了
  */
 
 @Aspect
