@@ -45,7 +45,7 @@ import java.util.Arrays;
  * 环绕通知在执行的时候是优先于普通通知的。
  * 如果是正常结束，则顺序是：@Around前置通知 -> @Before -> 原方法调用 -> @AfterReturning -> @After -> @Around后置通知 -> @Around finally通知 -> @Around环绕返回前通知
  * 如果是异常结束，则顺序是：@Around前置通知 -> @Before -> 原方法调用 -> @AfterReturning -> @After -> @Around异常通知 -> @Around finally通知 -> @Around环绕返回前通知
- * 环绕通知写起来就跟用JDK的动态代理是差不多的了
+ * 环绕通知写起来就跟用JDK的动态代理是差不多的了，如果需要修改返回值，则必须用
  */
 
 @Aspect
@@ -60,6 +60,9 @@ public class LogUtil {
 
 	@Pointcut("execution(public int com.lisz.service.impl.MyCalculator2.show(int))")
 	public void myPointcut2(){}
+
+	@Pointcut("execution(public int com.lisz.displayer.impl.DisplayerImpl.display(int))")
+	public void displayPointcut() {}
 
 	@Before(value = "myPointcut()")
 	public static void start() { // 参数列表不要随便填写参数，会有报错
@@ -203,6 +206,19 @@ public class LogUtil {
 			System.out.println("@Around finally");
 		}
 		System.out.println(methodName + " @Around ends with arg: " + i + " and result: " + res);
+		// 这里发个坏，修改一下返回值试试，哈哈哈
+		//res = 1000;
 		return res;
+	}
+
+	@Around("displayPointcut()")
+	public int around3(ProceedingJoinPoint pjp) {
+		try {
+			pjp.proceed();
+		} catch (Throwable throwable) {
+			throwable.printStackTrace();
+		} finally {
+		}
+		return 10000;
 	}
 }

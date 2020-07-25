@@ -30,7 +30,7 @@ public class MyCalculator implements Calculator {
 	}
 
 	public int show(int i) {
-		System.out.println(i);
+		System.out.println("i = " + i);
 		return i;
 	}
 }

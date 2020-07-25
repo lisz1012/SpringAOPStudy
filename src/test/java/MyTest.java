@@ -1,10 +1,13 @@
+import com.lisz.displayer.Displayer;
+import com.lisz.displayer.impl.DisplayerImpl;
 import com.lisz.proxy.CalculatorProxy;
 import com.lisz.service.Calculator;
 import com.lisz.service.MyCalculator;
 import com.lisz.service.impl.MyCalculator2;
 import com.lisz.service.myinterface.MyInterface;
 import com.lisz.service.myinterface.MySubclass;
-import org.junit.jupiter.api.Test;
+import org.junit.Assert;
+import org.junit.Test;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 
@@ -60,9 +63,9 @@ public class MyTest {
 	}
 
 	@Test
-	public void test07()throws Exception {
+	public void test07() throws Exception {
 		Calculator myCalculator2 = context.getBean("myCalculator2", Calculator.class);
 		int res = myCalculator2.show(1);
-		System.out.println(res);
+		System.out.println("The final result is: " + res);
 	}
 }

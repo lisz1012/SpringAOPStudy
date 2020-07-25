@@ -28,7 +28,7 @@ public class MyCalculator2 implements Calculator {
 	@Override
 	public int show(int i) {
 		System.out.println("i = " + i);
-		i = 9/0;
+		//i = 9/0;
 		return i;
 	}
 }

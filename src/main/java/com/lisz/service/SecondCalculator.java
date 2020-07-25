@@ -23,6 +23,7 @@ public class SecondCalculator implements Calculator {
 
 	@Override
 	public int show(int i) {
-		return 0;
+		System.out.println("i = " + i);
+		return i;
 	}
 }
