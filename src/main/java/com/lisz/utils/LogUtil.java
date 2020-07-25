@@ -1,6 +1,8 @@
 package com.lisz.utils;
 
+import org.aopalliance.intercept.Joinpoint;
 import org.aspectj.lang.JoinPoint;
+import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.Signature;
 import org.aspectj.lang.annotation.*;
 import org.springframework.stereotype.Component;
@@ -26,7 +28,7 @@ import java.util.Arrays;
  * advice的正常执行顺序: @Before -> @After -> @AfterReturning
  * advice的异常执行顺序: @Before -> @After -> @AfterThrowing
  * https://juejin.im/post/5e9fb976f265da47ef2f4137
- * 但是这里的测试顺序是：@Before -> @AfterReturning -> @After 这是个问题。
+ * 但是这里的测试顺序其实是：@Before -> @AfterReturning -> @After。
  *
  * 获得被代理方法的参数、方法名等信息的时候，必须使用JoinPoint对象为第一个参数传入代理方法。从中可以get到signature和args等
  *
@@ -37,8 +39,13 @@ import java.util.Arrays;
  *
  * 通知方法在定义的时候对于访问修饰符和返回值类型都没有明确的要求，但是要注意参数不能随便添加
  * 如果有多个匹配的execution表达式相同，能否抽出来？可以:
- *      1. 写一个空方法 2. 在其上写@Pointcut 3. 把织入点表达式作为唯一的字符串参数写进去 4. 在用到这个织入点表达式的注解（如@Before）
- *      后面的参数中写方法的调用，如：@Before(value = "myPointcut()")
+ *      1. 写一个无返回值的空方法 2. 在其上写@Pointcut 3. 把织入点表达式作为唯一的字符串参数写进去 4. 在用到这个织入点表达式的注解（如@Before）
+ *      后面的参数中写方法的调用，如：@Before(value = "myPointcut()")。此处的空方法之气到一个声明的作用，@Pointcut总得有个地方放吧
+ *
+ * 环绕通知在执行的时候是优先于普通通知的。
+ * 如果是正常结束，则顺序是：@Around前置通知 -> @Before -> 原方法调用 -> @AfterReturning -> @After -> @Around后置通知 -> @Around finally通知 -> @Around环绕返回前通知
+ * 如果是异常结束，则顺序是：@Around前置通知 -> @Before -> 原方法调用 -> @AfterReturning -> @After -> @Around异常通知 -> @Around finally通知 -> @Around环绕返回前通知
+ * 以上并不对
  */
 
 @Aspect
@@ -47,6 +54,12 @@ public class LogUtil {
 
 	@Pointcut("execution(public int com.lisz.service.MyCalculator.*(int, *))")
 	public void myPointcut(){}
+
+	@Pointcut("execution(public int com.lisz.service.MyCalculator.mul(int, *))")
+	public void mulPointcut(){}
+
+	@Pointcut("execution(public int com.lisz.service.impl.MyCalculator2.show(int))")
+	public void myPointcut2(){}
 
 	@Before(value = "myPointcut()")
 	public static void start() { // 参数列表不要随便填写参数，会有报错
@@ -118,5 +131,78 @@ public class LogUtil {
 	@After("execution(public int com.lisz.service.MyCalculator.add(int, int))") // 无论如何方法执行完了都会执行，相当于finally
 	public static void logFinally() {
 		System.out.println("方法执行结束");
+	}
+
+	// 环绕通知要写三段
+	@Around("myPointcut()")
+	public Object around(ProceedingJoinPoint pjp){
+		Signature signature = pjp.getSignature();
+		Object[] args = pjp.getArgs();
+		System.out.println("signature: " + signature);
+		System.out.println("Args: " + args);
+
+		Object retVal = 1; // 也可以把上面这个args写进参数中
+		System.out.println("环绕通知： " + signature.getName() + " 开始执行");
+		try {
+			// 通过反射的方式调用目标的方法，相当于执行method.invoke()同时可以自己修改返回的结果
+			retVal = pjp.proceed();
+			retVal = 100;
+		} catch (Throwable throwable) {
+			//throwable.printStackTrace();
+			System.out.println("环绕异常通知： " + signature.getName() + " 出现异常");
+		} finally {
+			System.out.println("环绕返回通知： " + signature.getName() + " 方法返回结果是： " + retVal);
+		}
+
+		System.out.println("mul ends");
+		return retVal;
+	}
+
+	// 测试执行顺序
+
+	@Before("myPointcut2()")
+	public void before2(JoinPoint joinPoint) {
+		int i = (int)joinPoint.getArgs()[0];
+		String methodName = joinPoint.getSignature().getName();
+		System.out.println(methodName + " @Before with arg: " + i);
+	}
+
+	@After(value = "myPointcut2()")
+	public void after2(JoinPoint joinPoint) {
+		int i = (int)joinPoint.getArgs()[0];
+		String methodName = joinPoint.getSignature().getName();
+		System.out.println(methodName + " @After with arg: " + i);
+	}
+
+	@AfterReturning(value = "myPointcut2()", returning = "retVal")
+	public void afterReturning2(JoinPoint joinPoint, int retVal) {
+		int i = (int)joinPoint.getArgs()[0];
+		String methodName = joinPoint.getSignature().getName();
+		System.out.println(methodName + " @AfterReturning with arg: " + i + " and return value: " + retVal);
+	}
+
+	@AfterThrowing(value = "myPointcut2()", throwing = "e")
+	public void afterThrowing2(JoinPoint joinPoint, Exception e) {
+		int i = (int)joinPoint.getArgs()[0];
+		String methodName = joinPoint.getSignature().getName();
+		System.out.println(methodName + " @AfterReturning with arg: " + i + " and threw an exception: " + e.getMessage());
+	}
+
+	@Around(value = "myPointcut2()")
+	public int around2(ProceedingJoinPoint pjp) {
+		int i = (int)pjp.getArgs()[0];
+		String methodName = pjp.getSignature().getName();
+		System.out.println("@Around starts");
+		int res = 0;
+		try {
+			res = (int)pjp.proceed();
+			System.out.println("@Around ends");
+		} catch (Throwable throwable) {
+			System.out.println("@Around catches an exception");
+		} finally {
+			System.out.println("@Around finally");
+		}
+		System.out.println(methodName + " @Around ends with arg: " + i + " and result: " + res);
+		return res;
 	}
 }

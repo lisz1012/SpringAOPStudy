@@ -51,4 +51,18 @@ public class MyTest {
 		Calculator myCalculator = context.getBean("myCalculator", Calculator.class);
 		myCalculator.div(1, 0);
 	}
+
+	@Test
+	public void test06()throws Exception {
+		Calculator myCalculator = context.getBean("myCalculator", Calculator.class);
+		int res = myCalculator.div(1, 0);
+		System.out.println(res); //通过代理或者说是反射的方式，修改了返回的结果
+	}
+
+	@Test
+	public void test07()throws Exception {
+		Calculator myCalculator2 = context.getBean("myCalculator2", Calculator.class);
+		int res = myCalculator2.show(1);
+		System.out.println(res);
+	}
 }

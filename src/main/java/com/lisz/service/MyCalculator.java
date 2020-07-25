@@ -20,6 +20,7 @@ public class MyCalculator implements Calculator {
 
 	public int mul(int i, int j) throws NoSuchMethodException {
 		int res = i * j;
+		System.out.println(i + " * " + j + " = " + res);
 		return res;
 	}
 
