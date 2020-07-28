@@ -159,7 +159,7 @@ public class LogAspect {
 			System.out.println("环绕返回通知： " + signature.getName() + " 方法返回结果是： " + retVal);
 		}
 
-		System.out.println("mul ends");
+		System.out.println(signature.getName() + " method ends");
 		return retVal;
 	}
 
