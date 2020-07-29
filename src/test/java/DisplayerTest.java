@@ -10,6 +10,7 @@ public class DisplayerTest {
 		Displayer displayer = context.getBean("displayerImpl", Displayer.class); // IOC
 		int res = displayer.display(3);
 		//System.out.println("The final result is: " + res);
+		System.out.println(displayer.getClass().getName());
 		Assert.assertEquals(3, res);
 	}
 }

@@ -215,6 +215,7 @@ public class LogAspect {
 
 	@Around("displayPointcut()")
 	public int around3(ProceedingJoinPoint pjp) {
+		System.out.println("haha");
 		try {
 			pjp.proceed();
 		} catch (Throwable throwable) {
