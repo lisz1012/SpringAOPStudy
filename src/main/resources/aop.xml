@@ -23,7 +23,7 @@
 
     <aop:config>
         <aop:aspect ref="logAspect" order="2"> <!-- 谁？ -->
-            <!-- 这里可以用来单写一个pointcut用来抽取织入点表达式。放在切面里面也可以使用被别的切面使用 -->
+            <!-- 这里可以用来单写一个pointcut用来抽取织入点表达式。即使放在切面里面也可以使用被别的切面使用 -->
             <aop:pointcut id="start" expression="execution(public int com.lisz.service.MyCalculator.*(int, *))"/> <!-- 在哪儿（加入代码逻辑）？ -->
             <aop:before method="start" pointcut-ref="start"/> <!-- 什么时候？做什么？ -->
             <aop:after method="logFinally" pointcut="execution(public int com.lisz.service.MyCalculator.add(int, int))"/>
