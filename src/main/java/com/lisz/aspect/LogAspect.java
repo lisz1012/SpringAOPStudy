@@ -22,7 +22,7 @@ import java.util.Arrays;
  * 项目命名规范要遵循。各种匹配性能方面应该没什么大的差别
  *
  * 在使用表达式的时候还支持逻辑运算：&& || !
- *      execution(public int com.mashibing.serviceMyCalculator.*(..)&& execution(*.*(..)))
+ *      execution(public int com.mashibing.serviceMyCalculator.*(..)&& execution(*.*(..))) // 两个都要满足
  *
  * advice的正常执行顺序: @Before -> @After -> @AfterReturning
  * advice的异常执行顺序: @Before -> @After -> @AfterThrowing
@@ -45,8 +45,11 @@ import java.util.Arrays;
  * 如果是正常结束，则顺序是：@Around前置通知 -> @Before -> 原方法调用 -> @AfterReturning -> @After -> @Around后置通知 -> @Around finally通知 -> @Around环绕返回前通知
  * 如果是异常结束，则顺序是：@Around前置通知 -> @Before -> 原方法调用 -> @AfterReturning -> @After -> @Around异常通知 -> @Around finally通知 -> @Around环绕返回前通知
  * 环绕通知写起来就跟用JDK的动态代理是差不多的了，如果需要修改返回值，则必须用@Around, 这种方式操作起来会控制得更细致
- * 用@Order(x)注解来标识不同的Aspect之间的相对顺序，x数字越大@Before越先执行、@After越后执行；数字越小则反之： 大内小外，底层就是一个类似于filter的责任链，类似递归，数字小的去
- * 调用数字大的。两个@Order 参数里面的x相等，则按照字母顺序来
+ *
+ * 私有方法不能加织入点
+ *
+ * 用@Order(x)注解来标识不同的Aspect之间的相对顺序，x数字越大@Before越后执行、@After越先执行；数字越小则反之： 大内小外，底层就是一个类似于filter的责任链，类似递归，数字小的去
+ * 调用数字大的。两个@Order 参数里面的x相等，或者压根都没有@Order，则按照字母顺序来
  */
 
 @Aspect
@@ -65,6 +68,10 @@ public class LogAspect {
 
 	@Pointcut("execution(public int com.lisz.displayer.impl.DisplayerImpl.display(int))")
 	public void displayPointcut() {}
+
+	// 私有方法不能加织入点，myPrint报红，但是不会与编译错误
+	@Pointcut("execution(private void com.lisz.displayer.impl.DisplayerImpl.myPrint(String))")
+	public void displayPointcut2(){}
 
 	@Before(value = "myPointcut()")
 	public static void start() { // 参数列表不要随便填写参数，会有报错
@@ -223,5 +230,16 @@ public class LogAspect {
 		} finally {
 		}
 		return 10000;
+	}
+
+	@Around("displayPointcut2()") //  私有方法不能加织入点。下面的打印不会被输出
+	public void around4(ProceedingJoinPoint pjp) {
+		System.out.println("Before...");
+		try {
+			pjp.proceed();
+		} catch (Throwable throwable) {
+			throwable.printStackTrace();
+		}
+		System.out.println("After...");
 	}
 }

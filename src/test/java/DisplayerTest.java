@@ -1,4 +1,5 @@
 import com.lisz.displayer.Displayer;
+import com.lisz.displayer.impl.DisplayerImpl;
 import org.junit.Assert;
 import org.junit.Test;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
@@ -12,5 +13,11 @@ public class DisplayerTest {
 		//System.out.println("The final result is: " + res);
 		System.out.println(displayer.getClass().getName());
 		Assert.assertEquals(3, res);
+	}
+
+	@Test
+	public void test09() throws Exception {
+		Displayer displayer = context.getBean("displayerImpl", Displayer.class); // IOC
+		displayer.print();
 	}
 }

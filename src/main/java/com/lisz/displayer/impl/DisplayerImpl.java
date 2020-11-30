@@ -10,4 +10,12 @@ public class DisplayerImpl implements Displayer {
 		System.out.println("i = " + i);
 		return i;
 	}
+
+	public void print(){
+		myPrint("aaa");
+	}
+
+	private void myPrint(String s) {
+		System.out.println(s);
+	}
 }

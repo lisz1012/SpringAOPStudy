@@ -8,6 +8,7 @@ public class XmlAOPConfigTest {
 	@Test
 	public void test01() throws Exception{
 		Calculator myCalculator = context.getBean("myCalculator", Calculator.class);
+		Object myCalculator1 = context.getBean("myCalculator");
 		myCalculator.add(2,3);
 	}
 }
